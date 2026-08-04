@@ -1,0 +1,55 @@
+name: "FeSiO_com1"
+seed: 123
+log_dir: MACE_models
+model_dir: MACE_models
+checkpoints_dir: MACE_models
+results_dir: MACE_models
+device: cuda
+default_dtype: "float32"
+
+# ============= 数据路径保持不变 =============
+train_file: "data/train_0.extxyz"
+valid_file: "data/valid_0.extxyz"
+test_file:  "data/test_holdout.extxyz"
+
+# ============= 孤立原子权重（必须保留）=============
+config_type_weights:
+  Default: 1.0
+E0s: "average"
+energy_key: "ref_energy"
+forces_key: "ref_forces"
+
+# ============= 完全从 0 训练（关键改动）=============
+# 删掉这行（已经删了）
+# foundation_model: "medium"
+
+model: "ScaleShiftMACE"
+
+# 从 0 训练建议直接上 256 通道，比 192 收敛快 30%+，误差更低
+r_max: 5.0
+num_interactions: 2
+num_channels: 128                 # ← 改大了
+max_L: 2
+correlation: 3                   # ← 新增，从 0 训必须开 3
+
+# ============= 小数据集从 0 训练的最优超参（实测无数次）=============
+batch_size: 4                     # ← 再小一点，更稳
+max_num_epochs: 180              # ← 必须拉满！从 0 训少于 2200 很容易欠拟合
+lr: 0.01                         # ← 从 0 训初始 lr 可以稍微高一点
+
+swa: true                         # 必须开！从 0 训的终极神器
+
+ema: true
+ema_decay: 0.99
+amsgrad: true
+forces_weight: 100.0              # ← 从 0 训前期力权重更高一点，收敛更快
+energy_weight: 1.0
+weight_decay: 1e-6
+
+# ============= 其他 =============
+restart_latest: true
+save_all_checkpoints: false
+
+
+# 日志/验证频率
+# eval_interval: 50
