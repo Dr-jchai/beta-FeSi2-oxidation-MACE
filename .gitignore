@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime logs and trajectories
+error.out
+*.log
+*.traj
+
+# Generated MD work directories and stage outputs
+sequential_*/
+round_*/
+final_relaxation/
+stage_*.extxyz
+final_config_with_velocities.extxyz
+last_config_with_velocities.extxyz
+uncertain_structures.extxyz
+
+# Generated analysis outputs
+maxcluster.dat
+maxcluster.png
+o2_dual_evolution.csv
